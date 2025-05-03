@@ -4,6 +4,25 @@ import random
 
 # 🔑 API Key Google Translate dari Secrets
 api_key = st.secrets.get("google_api_key", "YOUR_API_KEY")
+correct_password = st.secrets.get("app_password", "MY_SECRET_PASSWORD")
+
+st.title("🔒 Akses Terbatas")
+
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    password = st.text_input("Masukkan password:", type="password")
+    if st.button("Masuk"):
+        if password == correct_password:
+            st.session_state["authenticated"] = True
+            st.success("Akses diberikan!")
+        else:
+            st.error("Password salah.")
+    st.stop()
+
+# Setelah ini isi app normal kamu
+st.success("Selamat datang! Kamu bisa menggunakan aplikasi ini.")
 
 # 🧠 Fungsi ambil definisi dari DictionaryAPI.dev
 def get_definition(word):
