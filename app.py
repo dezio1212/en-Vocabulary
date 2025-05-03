@@ -54,26 +54,38 @@ st.title("📘 Vocabulary + Indonesian Translation")
 st.subheader("🔍 Cari kata")
 word_input = st.text_input("Masukkan kata (Bahasa Inggris):")
 
-# Jika tombol cari ditekan
+# --- Cari kata ---
 if st.button("Cari"):
     if word_input.strip():
         result = get_definition(word_input.strip())
-
         if "error" in result:
+            st.session_state["result"] = None
             st.error(result["error"])
         else:
-            st.success(f"📖 Definisi untuk: {result['word']}")
-            st.write(f"**Pengucapan:** {result['phonetic']}")
-            st.write(f"**Jenis Kata:** {result['part_of_speech']}")
-            st.write(f"**Arti (EN):** {result['definition']}")
-            if result["example"]:
-                st.caption(f"_Contoh penggunaan_: {result['example']}")
+            st.session_state["result"] = result
+            st.session_state["translate"] = False  # reset status translate
+    else:
+        st.warning("Masukkan kata terlebih dahulu.")
 
-            # Bagian translate dengan tombol persetujuan
-            st.markdown("### 🇮🇩 Terjemahan ke Bahasa Indonesia")
-            if st.button("Terjemahkan ke Bahasa Indonesia"):
-                translation = translate_to_indonesian(result["definition"], api_key)
-                st.write(f"**Arti (ID):** {translation}")
+# --- Tampilkan hasil definisi jika ada ---
+if "result" in st.session_state and st.session_state["result"]:
+    result = st.session_state["result"]
+    st.success(f"📖 Definisi untuk: {result['word']}")
+    st.write(f"**Pengucapan:** {result['phonetic']}")
+    st.write(f"**Jenis Kata:** {result['part_of_speech']}")
+    st.write(f"**Arti (EN):** {result['definition']}")
+    if result["example"]:
+        st.caption(f"_Contoh penggunaan_: {result['example']}")
+
+    # --- Tombol terjemahan manual ---
+    st.markdown("### 🇮🇩 Terjemahan ke Bahasa Indonesia")
+    if st.button("Terjemahkan ke Bahasa Indonesia"):
+        st.session_state["translate"] = True
+
+    if st.session_state.get("translate"):
+        translation = translate_to_indonesian(result["definition"], api_key)
+        st.write(f"**Arti (ID):** {translation}")
+
     else:
         st.warning("Masukkan kata terlebih dahulu.")
 
