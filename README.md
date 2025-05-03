@@ -130,7 +130,7 @@ A personal vocabulary learning web app built with **Python** and **Streamlit**, 
 
 ## 📚 Lisensi
 
-MIT License — Silakan gunakan dan modifikasi untuk pembelajaran pribadi
+GNU GENERAL PUBLIC LICENSE — Silakan gunakan dan modifikasi untuk pembelajaran pribadi
 
 ---
 
