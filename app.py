@@ -1,33 +1,51 @@
 import streamlit as st
 import requests
+import random
 
-st.set_page_config(page_title="en-Vocabulary App", layout="centered")
+# List kata contoh (bisa diganti dengan kata acak dari sumber lain)
+sample_words = ["apple", "run", "beautiful", "strategy", "think", "language", "honest", "develop", "jump", "inspire"]
 
-st.title("📘 en-Vocabulary App")
-
-def get_word():
+def get_definition(word):
+    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
     try:
-        # API 
-        API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/<word>"
-        response = requests.get(API_URL)
-        data = response.json
+        response = requests.get(url)
+        data = response.json()
 
-        word = data["word"]
-        meaning = data["meaning"]
-        example = data.get("example", "")
+        if isinstance(data, list):
+            entry = data[0]
+            word = entry["word"]
+            phonetic = entry.get("phonetic", "")
+            meaning_data = entry["meanings"][0]
+            part_of_speech = meaning_data["partOfSpeech"]
+            definition = meaning_data["definitions"][0]["definition"]
+            example = meaning_data["definitions"][0].get("example", "")
 
-        return word, meaning, example
+            return {
+                "word": word,
+                "phonetic": phonetic,
+                "part_of_speech": part_of_speech,
+                "definition": definition,
+                "example": example,
+            }
+        else:
+            return {"error": data.get("message", "Word not found")}
     except Exception as e:
-        return None, f"Error: {e}", ""
-    
-if st.button("🎲 Get New Word"):
-    word, meaning, example = get_word()
-    if word:
-        st.subheader(word)
-        st.write(f"**Meaning:** {meaning}")
-        if example:
-            st.caption(f"_Example_: {example}")
+        return {"error": str(e)}
+
+st.set_page_config(page_title="Vocabulary App", layout="centered")
+st.title("📘 Vocabulary Builder")
+
+if st.button("🎲 Get Random Word"):
+    random_word = random.choice(sample_words)
+    result = get_definition(random_word)
+
+    if "error" in result:
+        st.error(result["error"])
     else:
-        st.error(meaning)
+        st.subheader(f"{result['word']} {result['phonetic']}")
+        st.write(f"**Part of Speech:** {result['part_of_speech']}")
+        st.write(f"**Definition:** {result['definition']}")
+        if result["example"]:
+            st.caption(f"_Example_: {result['example']}")
 else:
-    st.info("Klik tombol di atas untuk melihat kosakata baru.")
+    st.info("Klik tombol di atas untuk melihat kosakata acak.")
