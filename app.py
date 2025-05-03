@@ -68,10 +68,13 @@ if st.button("Cari"):
             st.write(f"**Pengucapan:** {result['phonetic']}")
             st.write(f"**Jenis Kata:** {result['part_of_speech']}")
             st.write(f"**Arti (EN):** {result['definition']}")
+            st.markdown("### 🇮🇩 Terjemahan ke Bahasa Indonesia")
 
-            # Translate to Indonesian
+        # Tombol untuk memicu translate manual
+        if st.button("Terjemahkan ke Bahasa Indonesia"):
             translation = translate_to_indonesian(result["definition"], api_key)
             st.write(f"**Arti (ID):** {translation}")
+
 
             if result["example"]:
                 st.caption(f"_Contoh penggunaan_: {result['example']}")
