@@ -6,6 +6,7 @@ import random
 api_key = st.secrets.get("google_api_key", "YOUR_API_KEY")
 correct_password = st.secrets.get("app_password", "MY_SECRET_PASSWORD")
 
+st.set_page_config(page_title="Vocabulary App", layout="centered")
 st.title("🔒 Akses Terbatas")
 
 if "authenticated" not in st.session_state:
@@ -66,7 +67,6 @@ def translate_to_indonesian(text, api_key):
         return f"Error: {data.get('error', {}).get('message', 'Terjadi kesalahan')}"
 
 # 🖥️ UI Streamlit
-st.set_page_config(page_title="Vocabulary App", layout="centered")
 st.title("📘 Vocabulary + Indonesian Translation")
 
 # Input kata dari user
